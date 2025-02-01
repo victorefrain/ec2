@@ -61,13 +61,13 @@ module "load_balancer" {
 # Asociar instancias web al grupo de destino del balanceador de carga
 resource "aws_lb_target_group_attachment" "webserver_public" {
   target_group_arn = module.load_balancer.app_tg
-  target_id        = module.webserver_public.webserver.id
+  target_id        = module.webserver.id
   port             = 80
 }
 
 resource "aws_lb_target_group_attachment" "webserver_private" {
   target_group_arn = module.load_balancer.app_tg
-  target_id        = module.webserver_private.webserver.id
+  target_id        = module.webserver.id
   port             = 80
 }
 
