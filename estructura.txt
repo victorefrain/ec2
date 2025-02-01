@@ -1,0 +1,40 @@
+.
+├── LICENSE.txt
+├── estructura.txt
+├── main.tf
+├── modules
+│   ├── bastion
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── load_balancer
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── mongodb
+│   │   ├── install_sh.sh
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── network
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   ├── security
+│   │   ├── main.tf
+│   │   ├── outputs.tf
+│   │   └── variables.tf
+│   └── webserver
+│       ├── install_sh.sh
+│       ├── main.tf
+│       ├── outputs.tf
+│       └── variables.tf
+├── outputs.tf
+├── terraform.exe
+├── terraform.tfstate
+├── terraform.tfstate.backup
+├── tfplan
+├── variables.tf
+└── version.tf
+
+7 directories, 30 files
