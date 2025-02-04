@@ -13,5 +13,3 @@ variable "subnet_id" {
 variable "security_group_id" {
   description = "Security group ID for MongoDB"
 }
-
-

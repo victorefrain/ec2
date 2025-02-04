@@ -1,24 +1,15 @@
-variable "ami" {
-  description = "The ID of the AMI to use for the instance"
-  type        = string
+variable "instance_type" {
+  description = "Instance type for web server"
 }
 
-variable "instance_type" {
-  description = "The type of instance to use"
-  type        = string
+variable "ami" {
+  description = "Amazon Machine Image ID"
 }
 
 variable "subnet_id" {
-  description = "The ID of the subnet to launch the instance in"
-  type        = string
+  description = "Subnet ID for web server"
 }
 
 variable "security_group_id" {
-  description = "The ID of the security group to associate with the instance"
-  type        = string
-}
-
-variable "associate_public_ip_address" {
-  description = "Boolean to associate public IP address with instance"
-  type        = bool
+  description = "Security group ID for web server"
 }

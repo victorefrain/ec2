@@ -4,10 +4,11 @@ resource "aws_instance" "mongodb" {
   subnet_id     = var.subnet_id
   security_groups = [var.security_group_id]
 
-  user_data = file("${path.module}/install_mongodb.sh")
+  user_data = templatefile("${path.module}/install_mongodb.sh", {})
 
   tags = {
     Name = "mongodb"
   }
 }
+
 

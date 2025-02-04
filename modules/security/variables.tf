@@ -9,4 +9,3 @@ variable "public_subnet_id" {
 variable "private_subnet_id" {
   description = "ID of the private subnet"
 }
-

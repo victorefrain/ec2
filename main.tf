@@ -33,47 +33,74 @@ module "mongodb" {
   security_group_id = module.security.mongodb_sg_id
 }
 
-module "webserver_public" {
-  source = "./modules/webserver"
-  instance_type = var.webserver_instance_type
-  ami = var.ami
-  subnet_id = module.network.public_subnet_id
-  security_group_id = module.security.webserver_sg_id
-  associate_public_ip_address = true # Para asignar una IP pública
-}
-
-module "webserver_private" {
+module "webserver" {
   source = "./modules/webserver"
   instance_type = var.webserver_instance_type
   ami = var.ami
   subnet_id = module.network.private_subnet_id
   security_group_id = module.security.webserver_sg_id
-  associate_public_ip_address = false # No asignar una IP pública
 }
 
 module "load_balancer" {
   source = "./modules/load_balancer"
-  vpc_id = module.network.vpc_id
-  subnets = [module.network.public_subnet_id, module.network.private_subnet_id]
-  security_group_id = module.security.lb_sg_id
+  security_group_id = aws_security_group.lb_sg.id
+  subnet_ids        = [aws_subnet.example1.id, aws_subnet.example2.id]
+  vpc_id            = aws_vpc.example.id
 }
 
-# Asociar instancias web al grupo de destino del balanceador de carga
-resource "aws_lb_target_group_attachment" "webserver_public" {
-  target_group_arn = module.load_balancer.app_tg
-  target_id        = module.webserver.id
-  port             = 80
+resource "aws_vpc" "example" {
+  cidr_block = "10.0.0.0/16"
 }
 
-resource "aws_lb_target_group_attachment" "webserver_private" {
-  target_group_arn = module.load_balancer.app_tg
-  target_id        = module.webserver.id
-  port             = 80
+resource "aws_subnet" "example1" {
+  vpc_id     = aws_vpc.example.id
+  cidr_block = "10.0.1.0/24"
 }
 
-# Asociar instancia de mongodb al grupo de destino del balanceador de carga
-resource "aws_lb_target_group_attachment" "mongodb" {
-  target_group_arn = module.load_balancer.app_tg
-  target_id        = module.mongodb.mongodb_instance.id
-  port             = 27017 # Puerto de MongoDB
+resource "aws_subnet" "example2" {
+  vpc_id     = aws_vpc.example.id
+  cidr_block = "10.0.2.0/24"
+}
+
+resource "aws_security_group" "lb_sg" {
+  vpc_id = aws_vpc.example.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.example.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.example.id
+  }
+}
+
+resource "aws_route_table_association" "public1" {
+  subnet_id      = aws_subnet.example1.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public2" {
+  subnet_id      = aws_subnet.example2.id
+  route_table_id = aws_route_table.public.id
+}
+
+
+
+resource "aws_internet_gateway" "example" {
+  vpc_id = aws_vpc.example.id
 }
